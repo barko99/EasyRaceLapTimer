@@ -14,6 +14,8 @@ class Api::V1::RaceSessionController < Api::V1Controller
 
     race_session = RaceSession.create(hot_seat_enabled: json_input_data['hot_seat_enabled'],title: json_input_data['title'],active: true, mode: "competition", max_laps: json_input_data['max_laps'],num_satellites: json_input_data['num_satellites'],time_penalty_per_satellite: json_input_data['time_penalty_per_satellite'], idle_time_in_seconds: json_input_data['idle_time_in_seconds'] )
 
+    SoundFileWorker.perform_async("sfx_start_race")
+    
     race_session_adapter = RaceSessionAdapter.new(race_session)
     race_session_adapter.add_pilots_to_competition_race(json_input_data['pilots'])
     race_session.update_attribute(:active,true)

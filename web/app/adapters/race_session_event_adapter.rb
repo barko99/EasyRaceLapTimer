@@ -28,11 +28,19 @@ class RaceSessionEventAdapter
     puts "pilot_num_tracked_laps: #{pilot_num_tracked_laps}"
     puts "max_laps_for_this_race: #{max_laps_for_this_race}"
 
-    if(max_laps_for_this_race > pilot_num_tracked_laps)
+    if(max_laps_for_this_race - 1 > pilot_num_tracked_laps)
       # play the lap announcement for the last tracked lap count for this pilot
       puts "RaceSessionEventAdapter::perform_for_competition_mode: triggering sound for lap #{pilot_num_tracked_laps}"
       RaceLapAnnouncerWorker.perform_async(pilot_num_tracked_laps)
+ 
+      else if(max_laps_for_this_race - 1  = pilot_num_tracked_laps)
+      # play the lap announcement for the last tracked lap count for this pilot
+      puts "RaceSessionEventAdapter::perform_for_competition_mode: triggering sound for lap #{pilot_num_tracked_laps}"
+      RaceLapAnnouncerWorker.perform_async("sfx_lap_final_round")
+      
     else
+      RaceLapAnnouncerWorker.perform_async("sfx_race_finished")
+      
       #pilot finished race... let's see
       # RaceSessionEventAdapter.new(RaceSessionAdapter.new(RaceSession.find(6)),12).perform
       puts "finished race"
